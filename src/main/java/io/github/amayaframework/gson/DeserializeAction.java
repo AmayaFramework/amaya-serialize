@@ -4,6 +4,7 @@ import com.github.romanqed.jutils.structs.Pair;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.github.amayaframework.core.contexts.HttpRequest;
+import io.github.amayaframework.core.methods.HttpMethod;
 import io.github.amayaframework.core.pipelines.PipelineAction;
 import io.github.amayaframework.core.routers.Route;
 
@@ -19,6 +20,9 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
     @Override
     public Pair<HttpRequest, Route> apply(Pair<HttpRequest, Route> pair) {
         HttpRequest request = pair.getKey();
+        if (request.getMethod() == HttpMethod.GET || request.getMethod() == HttpMethod.HEAD) {
+            return pair;
+        }
         String body = (String) request.getBody();
         if (type == null) {
             request.setBody(JsonParser.parseString(body));
