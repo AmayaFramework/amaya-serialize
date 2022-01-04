@@ -23,7 +23,11 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
         if (type == null) {
             request.setBody(JsonParser.parseString(body));
         } else {
-            request.setBody(GSON.fromJson(body, type));
+            try {
+                request.setBody(GSON.fromJson(body, type));
+            } catch (Exception e) {
+                throw new IllegalArgumentException("invalid body");
+            }
         }
         return pair;
     }
