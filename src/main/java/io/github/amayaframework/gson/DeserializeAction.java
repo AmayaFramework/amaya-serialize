@@ -1,11 +1,11 @@
 package io.github.amayaframework.gson;
 
+import com.github.romanqed.jutils.structs.Pair;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.pipelines.PipelineAction;
 import io.github.amayaframework.core.routers.Route;
-import javafx.util.Pair;
 
 public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, Pair<HttpRequest, Route>> {
     private static final Gson GSON = new Gson();
