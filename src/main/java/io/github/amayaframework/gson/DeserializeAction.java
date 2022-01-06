@@ -7,9 +7,19 @@ import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.methods.HttpMethod;
 import io.github.amayaframework.core.pipelines.PipelineAction;
 import io.github.amayaframework.core.routers.Route;
+import io.github.amayaframework.server.utils.HttpCode;
+
+import java.util.*;
 
 public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, Pair<HttpRequest, Route>> {
     private static final Gson GSON = new Gson();
+    private static final Set<HttpMethod> NO_BODY;
+
+    static {
+        List<HttpMethod> methods = Arrays.asList(HttpMethod.GET, HttpMethod.HEAD);
+        NO_BODY = Collections.unmodifiableSet(new HashSet<>(methods));
+    }
+
     private final Class<?> type;
 
     public DeserializeAction(Class<?> type) {
@@ -20,7 +30,7 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
     @Override
     public Pair<HttpRequest, Route> apply(Pair<HttpRequest, Route> pair) {
         HttpRequest request = pair.getKey();
-        if (request.getMethod() == HttpMethod.GET || request.getMethod() == HttpMethod.HEAD) {
+        if (NO_BODY.contains(request.getMethod())) {
             return pair;
         }
         String body = (String) request.getBody();
@@ -30,7 +40,7 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
             try {
                 request.setBody(GSON.fromJson(body, type));
             } catch (Exception e) {
-                throw new IllegalArgumentException("invalid body");
+                reject(HttpCode.BAD_REQUEST);
             }
         }
         return pair;
