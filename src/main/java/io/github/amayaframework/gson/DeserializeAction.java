@@ -1,17 +1,16 @@
 package io.github.amayaframework.gson;
 
-import com.github.romanqed.jutils.structs.Pair;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.methods.HttpMethod;
 import io.github.amayaframework.core.pipelines.PipelineAction;
-import io.github.amayaframework.core.routers.Route;
+import io.github.amayaframework.core.pipelines.RequestData;
 import io.github.amayaframework.server.utils.HttpCode;
 
 import java.util.*;
 
-public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, Pair<HttpRequest, Route>> {
+public class DeserializeAction extends PipelineAction<RequestData, RequestData> {
     private static final Gson GSON = new Gson();
     private static final Set<HttpMethod> NO_BODY;
 
@@ -23,15 +22,14 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
     private final Class<?> type;
 
     public DeserializeAction(Class<?> type) {
-        super(GsonStage.DESERIALIZE_BODY.name());
         this.type = type;
     }
 
     @Override
-    public Pair<HttpRequest, Route> apply(Pair<HttpRequest, Route> pair) {
-        HttpRequest request = pair.getKey();
+    public RequestData apply(RequestData requestData) {
+        HttpRequest request = requestData.getRequest();
         if (NO_BODY.contains(request.getMethod())) {
-            return pair;
+            return requestData;
         }
         String body = (String) request.getBody();
         if (type == null) {
@@ -43,6 +41,6 @@ public class DeserializeAction extends PipelineAction<Pair<HttpRequest, Route>, 
                 reject(HttpCode.BAD_REQUEST);
             }
         }
-        return pair;
+        return requestData;
     }
 }
