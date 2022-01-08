@@ -8,10 +8,6 @@ import io.github.amayaframework.core.pipelines.PipelineAction;
 public class SerializeAction extends PipelineAction<HttpResponse, HttpResponse> {
     private static final Gson GSON = new Gson();
 
-    public SerializeAction() {
-        super(GsonStage.SERIALIZE_BODY.name());
-    }
-
     @Override
     public HttpResponse apply(HttpResponse response) {
         Object body = response.getBody();
