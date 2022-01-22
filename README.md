@@ -1,4 +1,4 @@
-# amaya-gson [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.amayaframework/gson-impl/badge.svg?style=flat)](https://repo1.maven.org/maven2/io/github/amayaframework/gson-impl/)
+# amaya-gson [![maven-central](https://img.shields.io/maven-central/v/io.github.amayaframework/gson-impl?color=blue)](https://repo1.maven.org/maven2/io/github/amayaframework/gson-impl/)
 
 A plugin that adds features for json using gson.
 
