@@ -2,21 +2,20 @@ package io.github.amayaframework.gson;
 
 import com.github.romanqed.jutils.structs.pipeline.Pipeline;
 import io.github.amayaframework.core.AmayaBuilder;
+import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
-import io.github.amayaframework.core.handlers.PipelineHandler;
+import io.github.amayaframework.core.handlers.IOHandler;
 import io.github.amayaframework.core.pipelines.Stage;
-
-import java.util.function.Consumer;
 
 /**
  * A class that implements a configurator that adds the necessary actions to pipelines.
- * To use it, call {@link AmayaBuilder#addConfigurator(Consumer)}
+ * To use it, call {@link AmayaBuilder#addConfigurator(Configurator)}
  */
-public class GsonPipelineConfigurator implements Consumer<PipelineHandler> {
+public class GsonConfigurator implements Configurator {
     @Override
-    public void accept(PipelineHandler handler) {
-        Pipeline input = handler.input();
-        Pipeline output = handler.output();
+    public void accept(IOHandler handler) {
+        Pipeline input = handler.getInput();
+        Pipeline output = handler.getOutput();
         Controller controller = handler.getController();
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
