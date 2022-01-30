@@ -9,7 +9,7 @@ To install it, you will need:
 * any build of the JDK no older than version 8
 * Maven/Gradle
 * [classindex](https://github.com/atteo/classindex)
-* [amaya-core](https://github.com/AmayaFramework/amaya-core)
+* [amaya-core-api](https://github.com/AmayaFramework/amaya-core-api)
 * [gson](https://github.com/google/gson) (optionally)
 
 ## Installing
@@ -21,7 +21,7 @@ dependencies {
     implementation group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
     annotationProcessor group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
-    implementation group: 'io.github.amayaframework', name: 'core', version: 'LATEST'
+    implementation group: 'io.github.amayaframework', name: 'core-api', version: '1.0.2'
     implementation group: 'io.github.amayaframework', name: 'gson-impl', version: 'LATEST'
 }
 ```
@@ -41,8 +41,8 @@ dependencies {
 </dependency>
 <dependency>
     <groupId>io.github.amayaframework</groupId>
-    <artifactId>core</artifactId>
-    <version>LATEST</version>
+    <artifactId>core-api</artifactId>
+    <version>1.0.2</version>
 </dependency>
 <dependency>
     <groupId>io.github.amayaframework</groupId>
@@ -54,12 +54,27 @@ dependencies {
 ## Usage example
 
 To use the plugin, just add its pipeline configurator when configuring the framework server.
+Example for the tomcat
+
+```Java
+public class Server {
+    public static void main(String[] args) throws LifecycleException {
+        Tomcat tomcat = new AmayaBuilder().
+                addConfigurator(new GsonConfigurator()).
+                build();
+        tomcat.start();
+        tomcat.getServer().await();
+    }
+}
+```
+
+Example for sun server
 
 ```Java
 public class Server {
     public static void main(String[] args) throws IOException {
         AmayaServer server = new AmayaBuilder().
-                addConfigurator(new GsonPipelineConfigurator()).
+                addConfigurator(new GsonConfigurator()).
                 build();
         server.start();
     }
@@ -87,9 +102,8 @@ public class MyController extends AbstractController {
 * [classindex](https://github.com/atteo/classindex) - Annotation scanning
 * [gson](https://github.com/google/gson) - Working with JSON and dynamic object creation
 * [java-utils](https://github.com/RomanQed/java-utils) - Pipelines and other stuff
-* [sun-http-server](https://github.com/AmayaFramework/sun-http-server) - Some http stuff
 * [amaya-filters](https://github.com/AmayaFramework/amaya-filters) - Body filter
-* [amaya-core](https://github.com/AmayaFramework/amaya-core) - Pipeline handlers
+* [amaya-core-api](https://github.com/AmayaFramework/amaya-core-api) - Pipeline handlers
 
 ## Authors
 * **RomanQed** - *Main work* - [RomanQed](https://github.com/RomanQed)

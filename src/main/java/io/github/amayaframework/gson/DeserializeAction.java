@@ -1,46 +1,55 @@
 package io.github.amayaframework.gson;
 
+import com.github.romanqed.jutils.http.HttpCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.methods.HttpMethod;
-import io.github.amayaframework.core.pipelines.AbstractRequestData;
-import io.github.amayaframework.core.pipelines.PipelineAction;
-import io.github.amayaframework.server.utils.HttpCode;
+import io.github.amayaframework.core.pipelines.RequestData;
 
 import java.util.*;
 
-public class DeserializeAction extends PipelineAction<AbstractRequestData, AbstractRequestData> {
+public class DeserializeAction extends JsonAction<RequestData, RequestData> {
     private static final Gson GSON = new Gson();
     private static final Set<HttpMethod> NO_BODY;
 
     static {
-        List<HttpMethod> methods = Arrays.asList(HttpMethod.GET, HttpMethod.HEAD);
+        List<HttpMethod> methods = Arrays.asList(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS);
         NO_BODY = Collections.unmodifiableSet(new HashSet<>(methods));
     }
 
     private final Class<?> type;
 
-    public DeserializeAction(Class<?> type) {
+    public DeserializeAction(Class<?> type, boolean forceJson) {
+        super(forceJson);
         this.type = type;
     }
 
     @Override
-    public AbstractRequestData apply(AbstractRequestData requestData) {
+    public RequestData apply(RequestData requestData) {
         HttpRequest request = requestData.getRequest();
         if (NO_BODY.contains(request.getMethod())) {
             return requestData;
         }
-        String body = (String) request.getBody();
-        if (type == null) {
-            request.setBody(JsonParser.parseString(body));
-        } else {
-            try {
-                request.setBody(GSON.fromJson(body, type));
-            } catch (Exception e) {
+        if (request.getContentType() != ContentType.JSON) {
+            if (forceJson) {
                 reject(HttpCode.BAD_REQUEST);
             }
+            return requestData;
         }
+        String body = request.getBodyAsString();
+        Object toSet = null;
+        try {
+            if (type == null) {
+                toSet = JsonParser.parseString(body);
+            } else {
+                toSet = GSON.fromJson(body, type);
+            }
+        } catch (Exception e) {
+            reject(HttpCode.BAD_REQUEST);
+        }
+        request.setBody(toSet);
         return requestData;
     }
 }
