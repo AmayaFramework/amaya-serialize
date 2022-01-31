@@ -1,22 +1,24 @@
 package io.github.amayaframework.gson;
 
 import com.github.romanqed.jutils.http.HttpCode;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpResponse;
 
 public class JsonResponses {
+    private final static Gson GSON = new Gson();
+
     public static HttpResponse responseWithCode(HttpCode code, Object body) {
         HttpResponse ret = new HttpResponse(code);
         ret.setContentType(ContentType.JSON);
+        JsonObject json = new JsonObject();
+        json.addProperty("status", code.getCode());
+        json.addProperty("message", code.getMessage());
         if (body != null) {
-            ret.setBody(body);
-        } else {
-            JsonObject json = new JsonObject();
-            json.addProperty("status", code.getCode());
-            json.addProperty("message", code.getMessage());
-            ret.setBody(json);
+            json.add("body", GSON.toJsonTree(body));
         }
+        ret.setBody(json);
         return ret;
     }
 
