@@ -6,12 +6,16 @@ import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
 import io.github.amayaframework.core.handlers.IOHandler;
 import io.github.amayaframework.core.pipelines.Stage;
+import io.github.amayaframework.core.routes.MethodRoute;
+
+import java.util.Collection;
 
 /**
  * A class that implements a configurator that adds the necessary actions to pipelines.
  * To use it, call {@link AbstractBuilder#addConfigurator(Configurator)}
  */
 public class GsonConfigurator implements Configurator {
+    public static final String METHOD_ENTITY = "mt";
     private final boolean forceJson;
 
     /**
@@ -35,6 +39,17 @@ public class GsonConfigurator implements Configurator {
         Controller controller = handler.getController();
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
+        Collection<MethodRoute> routes = handler.getController().getRouter().getRoutes();
+        for (MethodRoute route : routes) {
+            Entity routeEntity = route.getMethod().getAnnotation(Entity.class);
+            if (routeEntity == null) {
+                continue;
+            }
+            if (entity != null) {
+                throw new IllegalStateException("You can't annotate a controller and a method at the same time");
+            }
+            route.setAttachment(METHOD_ENTITY, routeEntity.value());
+        }
         if (entity != null) {
             type = entity.value();
         }

@@ -40,6 +40,10 @@ public class DeserializeAction extends JsonAction<RequestData, RequestData> {
         }
         String body = request.getBodyAsString();
         Object toSet = null;
+        Class<?> type = this.type;
+        if (type == null) {
+            type = (Class<?>) requestData.getRoute().getAttachment(GsonConfigurator.METHOD_ENTITY);
+        }
         try {
             if (type == null) {
                 toSet = JsonParser.parseString(body);
