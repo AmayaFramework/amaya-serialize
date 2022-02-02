@@ -42,7 +42,7 @@ public class DeserializeAction extends JsonAction<RequestData, RequestData> {
         Object toSet = null;
         Class<?> type = this.type;
         if (type == null) {
-            type = (Class<?>) requestData.getRoute().getAttachment(GsonConfigurator.METHOD_ENTITY);
+            type = requestData.getRoute().get(GsonConfigurator.METHOD_ENTITY);
         }
         try {
             if (type == null) {

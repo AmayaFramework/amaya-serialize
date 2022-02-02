@@ -5,12 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpResponse;
+import io.github.amayaframework.core.contexts.Responses;
 
 public class JsonResponses {
     private final static Gson GSON = new Gson();
 
     public static HttpResponse responseWithCode(HttpCode code, Object body) {
-        HttpResponse ret = new HttpResponse(code);
+        HttpResponse ret = Responses.response(code);
         ret.setContentType(ContentType.JSON);
         JsonObject json = new JsonObject();
         json.addProperty("status", code.getCode());
