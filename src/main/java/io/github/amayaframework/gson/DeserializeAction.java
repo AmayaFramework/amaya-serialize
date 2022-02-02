@@ -27,7 +27,7 @@ public class DeserializeAction extends JsonAction<RequestData, RequestData> {
     }
 
     @Override
-    public RequestData apply(RequestData requestData) {
+    public RequestData execute(RequestData requestData) {
         HttpRequest request = requestData.getRequest();
         if (NO_BODY.contains(request.getMethod())) {
             return requestData;

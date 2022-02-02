@@ -1,6 +1,6 @@
 package io.github.amayaframework.gson;
 
-import com.github.romanqed.jutils.structs.pipeline.Pipeline;
+import com.github.romanqed.jutils.pipeline.Pipeline;
 import io.github.amayaframework.core.AbstractBuilder;
 import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
@@ -34,8 +34,7 @@ public class GsonConfigurator implements Configurator {
 
     @Override
     public void accept(IOHandler handler) {
-        Pipeline input = handler.getInput();
-        Pipeline output = handler.getOutput();
+        Pipeline pipeline = handler.getPipeline();
         Controller controller = handler.getController();
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
@@ -53,13 +52,13 @@ public class GsonConfigurator implements Configurator {
         if (entity != null) {
             type = entity.value();
         }
-        input.insertAfter(
+        pipeline.insertAfter(
                 Stage.PARSE_REQUEST_BODY.name(),
                 GsonStage.DESERIALIZE_BODY.name(),
                 new DeserializeAction(type, forceJson)
         );
-        output.insertAfter(
-                Stage.CHECK_RESPONSE.name(),
+        pipeline.insertAfter(
+                Stage.INVOKE_CONTROLLER.name(),
                 GsonStage.SERIALIZE_BODY.name(),
                 new SerializeAction(forceJson)
         );

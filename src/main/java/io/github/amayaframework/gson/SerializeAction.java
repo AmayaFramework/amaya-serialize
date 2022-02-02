@@ -1,5 +1,6 @@
 package io.github.amayaframework.gson;
 
+import com.github.romanqed.jutils.http.HttpCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import io.github.amayaframework.core.contexts.ContentType;
@@ -13,8 +14,11 @@ public class SerializeAction extends JsonAction<HttpResponse, HttpResponse> {
     }
 
     @Override
-    public HttpResponse apply(HttpResponse response) {
+    public HttpResponse execute(HttpResponse response) {
         if (response.getContentType() != ContentType.JSON) {
+            if (forceJson) {
+                reject(HttpCode.INTERNAL_SERVER_ERROR);
+            }
             return response;
         }
         Object body = response.getBody();
