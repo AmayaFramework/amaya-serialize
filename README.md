@@ -73,7 +73,7 @@ Example for sun server
 ```Java
 public class Server {
     public static void main(String[] args) throws IOException {
-        AmayaServer server = new AmayaBuilder().
+        HttpServer server = new AmayaBuilder().
                 addConfigurator(new GsonConfigurator()).
                 build();
         server.start();
