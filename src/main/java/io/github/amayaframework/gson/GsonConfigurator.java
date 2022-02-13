@@ -37,7 +37,7 @@ public class GsonConfigurator implements PipelineConfigurator {
         Controller controller = handler.getController();
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
-        Collection<MethodRoute> routes = handler.getController().getRouter().getRoutes();
+        Collection<MethodRoute> routes = handler.getController().getRoutes();
         for (MethodRoute route : routes) {
             Entity routeEntity = route.getMethod().getAnnotation(Entity.class);
             if (routeEntity == null) {
