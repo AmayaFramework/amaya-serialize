@@ -1,20 +1,20 @@
 package io.github.amayaframework.gson;
 
-import com.github.romanqed.jutils.pipeline.Pipeline;
 import io.github.amayaframework.core.AbstractBuilder;
-import io.github.amayaframework.core.configurators.Configurator;
+import io.github.amayaframework.core.configurators.PipelineConfigurator;
 import io.github.amayaframework.core.controllers.Controller;
-import io.github.amayaframework.core.handlers.IOHandler;
-import io.github.amayaframework.core.pipelines.Stage;
+import io.github.amayaframework.core.handlers.PipelineHandler;
+import io.github.amayaframework.core.pipelines.InputStage;
+import io.github.amayaframework.core.pipelines.OutputStage;
 import io.github.amayaframework.core.routes.MethodRoute;
 
 import java.util.Collection;
 
 /**
  * A class that implements a configurator that adds the necessary actions to pipelines.
- * To use it, call {@link AbstractBuilder#addConfigurator(Configurator)}
+ * To use it, call {@link AbstractBuilder#addConfigurator(PipelineConfigurator)}
  */
-public class GsonConfigurator implements Configurator {
+public class GsonConfigurator implements PipelineConfigurator {
     public static final String METHOD_ENTITY = "mt";
     private final boolean forceJson;
 
@@ -33,8 +33,7 @@ public class GsonConfigurator implements Configurator {
     }
 
     @Override
-    public void accept(IOHandler handler) {
-        Pipeline pipeline = handler.getPipeline();
+    public void configure(PipelineHandler handler) {
         Controller controller = handler.getController();
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
@@ -52,15 +51,15 @@ public class GsonConfigurator implements Configurator {
         if (entity != null) {
             type = entity.value();
         }
-        pipeline.insertAfter(
-                Stage.PARSE_REQUEST_BODY.name(),
-                GsonStage.DESERIALIZE_BODY.name(),
+        handler.getInput().insertAfter(
+                InputStage.PARSE_REQUEST_BODY,
+                GsonStage.DESERIALIZE_BODY,
                 new DeserializeAction(type, forceJson)
         );
-        pipeline.insertAfter(
-                Stage.INVOKE_CONTROLLER.name(),
-                GsonStage.SERIALIZE_BODY.name(),
-                new SerializeAction(forceJson)
+        handler.getOutput().insertAfter(
+                OutputStage.PROCESS_HEADERS,
+                GsonStage.SERIALIZE_BODY,
+                new SerializeAction()
         );
     }
 }

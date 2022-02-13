@@ -1,9 +1,9 @@
 package io.github.amayaframework.gson;
 
 /**
- * Enum containing the main processing stages added by this plugin.
+ * Class containing the main processing stages added by this plugin.
  */
-public enum GsonStage {
-    SERIALIZE_BODY,
-    DESERIALIZE_BODY
+public class GsonStage {
+    public static final String SERIALIZE_BODY = "SerializeBodyAction";
+    public static final String DESERIALIZE_BODY = "DeserializeBodyAction";
 }
