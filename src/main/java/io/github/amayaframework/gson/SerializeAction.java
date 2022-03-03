@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpResponse;
-import io.github.amayaframework.core.pipelines.PipelineAction;
-import io.github.amayaframework.core.pipelines.ResponseData;
+import io.github.amayaframework.core.pipeline.PipelineAction;
+import io.github.amayaframework.core.pipeline.ResponseData;
 
 public class SerializeAction extends PipelineAction<ResponseData, ResponseData> {
     private static final Gson GSON = new Gson();

@@ -6,8 +6,8 @@ import com.google.gson.JsonParser;
 import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.methods.HttpMethod;
-import io.github.amayaframework.core.pipelines.InputAction;
-import io.github.amayaframework.core.pipelines.RequestData;
+import io.github.amayaframework.core.pipeline.InputAction;
+import io.github.amayaframework.core.pipeline.RequestData;
 
 import java.util.*;
 
@@ -21,11 +21,9 @@ public class DeserializeAction extends InputAction<RequestData, RequestData> {
     }
 
     private final boolean forceJson;
-    private final Class<?> type;
 
-    public DeserializeAction(Class<?> type, boolean forceJson) {
+    public DeserializeAction(boolean forceJson) {
         this.forceJson = forceJson;
-        this.type = type;
     }
 
     @Override
@@ -51,10 +49,7 @@ public class DeserializeAction extends InputAction<RequestData, RequestData> {
         }
         String body = request.getBodyAsString();
         Object toSet = null;
-        Class<?> type = this.type;
-        if (type == null) {
-            type = requestData.getRoute().get(GsonConfigurator.METHOD_ENTITY);
-        }
+        Class<?> type = requestData.getRoute().get(GsonConfigurator.METHOD_ENTITY);
         try {
             if (type == null) {
                 toSet = JsonParser.parseString(body);

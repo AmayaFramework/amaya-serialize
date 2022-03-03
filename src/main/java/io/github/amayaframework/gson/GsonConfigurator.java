@@ -1,20 +1,18 @@
 package io.github.amayaframework.gson;
 
 import io.github.amayaframework.core.AbstractBuilder;
-import io.github.amayaframework.core.configurators.PipelineConfigurator;
+import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
-import io.github.amayaframework.core.handlers.PipelineHandler;
-import io.github.amayaframework.core.pipelines.InputStage;
-import io.github.amayaframework.core.pipelines.OutputStage;
+import io.github.amayaframework.core.pipeline.NamedPipeline;
 import io.github.amayaframework.core.routes.MethodRoute;
 
 import java.util.Collection;
 
 /**
  * A class that implements a configurator that adds the necessary actions to pipelines.
- * To use it, call {@link AbstractBuilder#addConfigurator(PipelineConfigurator)}
+ * To use it, call {@link AbstractBuilder#addConfigurator(Configurator)}
  */
-public class GsonConfigurator implements PipelineConfigurator {
+public class GsonConfigurator implements Configurator {
     public static final String METHOD_ENTITY = "mt";
     private final boolean forceJson;
 
@@ -33,33 +31,32 @@ public class GsonConfigurator implements PipelineConfigurator {
     }
 
     @Override
-    public void configure(PipelineHandler handler) {
-        Controller controller = handler.getController();
+    public void configureController(Controller controller) {
         Class<?> type = null;
         Entity entity = controller.getClass().getAnnotation(Entity.class);
-        Collection<MethodRoute> routes = handler.getController().getRoutes();
-        for (MethodRoute route : routes) {
-            Entity routeEntity = route.getMethod().getAnnotation(Entity.class);
-            if (routeEntity == null) {
-                continue;
-            }
-            if (entity != null) {
-                throw new IllegalStateException("You can't annotate a controller and a method at the same time");
-            }
-            route.setAttachment(METHOD_ENTITY, routeEntity.value());
-        }
         if (entity != null) {
             type = entity.value();
         }
-        handler.getInput().insertAfter(
-                InputStage.PARSE_REQUEST_BODY,
-                GsonStage.DESERIALIZE_BODY,
-                new DeserializeAction(type, forceJson)
-        );
-        handler.getOutput().insertAfter(
-                OutputStage.PROCESS_HEADERS,
-                GsonStage.SERIALIZE_BODY,
-                new SerializeAction()
-        );
+        Collection<MethodRoute> routes = controller.getRoutes();
+        for (MethodRoute route : routes) {
+            if (type != null) {
+                route.setAttachment(METHOD_ENTITY, type);
+            } else {
+                Entity routeEntity = route.getMethod().getAnnotation(Entity.class);
+                if (routeEntity != null) {
+                    route.setAttachment(METHOD_ENTITY, routeEntity.value());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void configureInput(NamedPipeline input) {
+        input.put(new DeserializeAction(forceJson));
+    }
+
+    @Override
+    public void configureOutput(NamedPipeline output) {
+        output.put(new SerializeAction());
     }
 }
