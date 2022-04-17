@@ -1,6 +1,6 @@
 package io.github.amayaframework.gson;
 
-import io.github.amayaframework.core.AbstractBuilder;
+import io.github.amayaframework.core.AmayaBuilder;
 import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
 import io.github.amayaframework.core.pipeline.NamedPipeline;
@@ -10,7 +10,7 @@ import java.util.Collection;
 
 /**
  * A class that implements a configurator that adds the necessary actions to pipelines.
- * To use it, call {@link AbstractBuilder#addConfigurator(Configurator)}
+ * To use it, call {@link AmayaBuilder#addConfigurator(Configurator)}
  */
 public class GsonConfigurator implements Configurator {
     public static final String METHOD_ENTITY = "mt";

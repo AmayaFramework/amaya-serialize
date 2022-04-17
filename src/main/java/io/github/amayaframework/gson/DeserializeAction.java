@@ -5,20 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import io.github.amayaframework.core.contexts.ContentType;
 import io.github.amayaframework.core.contexts.HttpRequest;
-import io.github.amayaframework.core.methods.HttpMethod;
 import io.github.amayaframework.core.pipeline.InputAction;
 import io.github.amayaframework.core.pipeline.RequestData;
 
-import java.util.*;
-
 public class DeserializeAction extends InputAction<RequestData, RequestData> {
     private static final Gson GSON = new Gson();
-    private static final Set<HttpMethod> NO_BODY;
-
-    static {
-        List<HttpMethod> methods = Arrays.asList(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS);
-        NO_BODY = Collections.unmodifiableSet(new HashSet<>(methods));
-    }
 
     private final boolean forceJson;
 
@@ -38,7 +29,7 @@ public class DeserializeAction extends InputAction<RequestData, RequestData> {
     @Override
     public RequestData execute(RequestData requestData) {
         HttpRequest request = requestData.getRequest();
-        if (NO_BODY.contains(request.getMethod())) {
+        if (!requestData.getMethod().isHasBody()) {
             return requestData;
         }
         if (request.getContentType() != ContentType.JSON) {
