@@ -1,5 +1,6 @@
 package io.github.amayaframework.serializer;
 
+import io.github.amayaframework.core.actions.OutputStage;
 import io.github.amayaframework.core.configurators.Access;
 import io.github.amayaframework.core.configurators.AccessPolicy;
 import io.github.amayaframework.core.configurators.Configurator;
@@ -41,6 +42,6 @@ public final class SerializeConfigurator implements Configurator {
     @Override
     @Access(AccessPolicy.DIRECT)
     public void configureOutput(NamedPipeline output) {
-        output.insertFirst(new SerializeAction(serializer));
+        output.insertBefore(OutputStage.PROCESS_HEADERS, new SerializeAction(serializer));
     }
 }
