@@ -1,6 +1,6 @@
-# amaya-gson [![maven-central](https://img.shields.io/maven-central/v/io.github.amayaframework/gson-impl?color=blue)](https://repo1.maven.org/maven2/io/github/amayaframework/gson-impl/)
+# amaya-serialize [![maven-central](https://img.shields.io/maven-central/v/io.github.amayaframework/gson-impl?color=blue)](https://repo1.maven.org/maven2/io/github/amayaframework/gson-impl/)
 
-A plugin that adds features for json using gson.
+A plugin that allows you to easily integrate support for the required serializer.
 
 ## Getting Started
 
@@ -10,7 +10,6 @@ To install it, you will need:
 * Maven/Gradle
 * [classindex](https://github.com/atteo/classindex)
 * [amaya-core-api](https://github.com/AmayaFramework/amaya-core-api)
-* [gson](https://github.com/google/gson) (optionally)
 
 ## Installing
 
@@ -20,9 +19,8 @@ To install it, you will need:
 dependencies {
     implementation group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
     annotationProcessor group: 'org.atteo.classindex', name: 'classindex', version: '3.4'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
-    implementation group: 'io.github.amayaframework', name: 'core-api', version: '1.0.2'
-    implementation group: 'io.github.amayaframework', name: 'gson-impl', version: 'LATEST'
+    implementation group: 'io.github.amayaframework', name: 'core-api', version: 'LATEST'
+    implementation group: 'io.github.amayaframework', name: 'serialize', version: 'LATEST'
 }
 ```
 
@@ -35,18 +33,13 @@ dependencies {
     <version>3.4</version>
 </dependency>
 <dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.9</version>
-</dependency>
-<dependency>
     <groupId>io.github.amayaframework</groupId>
     <artifactId>core-api</artifactId>
-    <version>1.0.2</version>
+    <version>LATEST</version>
 </dependency>
 <dependency>
     <groupId>io.github.amayaframework</groupId>
-    <artifactId>gson-impl</artifactId>
+    <artifactId>serialize</artifactId>
     <version>LATEST</version>
 </dependency>
 ```
@@ -54,29 +47,15 @@ dependencies {
 ## Usage example
 
 To use the plugin, just add its pipeline configurator when configuring the framework server.
-Example for the tomcat
 
 ```Java
 public class Server {
-    public static void main(String[] args) throws LifecycleException {
-        Tomcat tomcat = new AmayaBuilder().
-                addConfigurator(new GsonConfigurator()).
+    public static void main(String[] args) throws Throwable {
+        Serializer serializer; // = new YourSerializer();
+        Amaya<?> amaya = new TomcatBuilder().
+                addConfigurator(new SerializeConfigurator(serializer)).
                 build();
-        tomcat.start();
-        tomcat.getServer().await();
-    }
-}
-```
-
-Example for sun server
-
-```Java
-public class Server {
-    public static void main(String[] args) throws IOException {
-        HttpServer server = new AmayaBuilder().
-                addConfigurator(new GsonConfigurator()).
-                build();
-        server.start();
+        amaya.start();
     }
 }
 ```
@@ -100,7 +79,6 @@ public class MyController extends AbstractController {
 
 * [Gradle](https://gradle.org) - Dependency management
 * [classindex](https://github.com/atteo/classindex) - Annotation scanning
-* [gson](https://github.com/google/gson) - Working with JSON and dynamic object creation
 * [java-utils](https://github.com/RomanQed/java-utils) - Pipelines and other stuff
 * [amaya-filters](https://github.com/AmayaFramework/amaya-filters) - Body filter
 * [amaya-core-api](https://github.com/AmayaFramework/amaya-core-api) - Pipeline handlers
