@@ -5,28 +5,21 @@ import io.github.amayaframework.core.pipeline.PipelineAction;
 import io.github.amayaframework.core.pipeline.ResponseData;
 
 final class SerializeAction extends PipelineAction<ResponseData, ResponseData> {
-    private final Serializer serializer;
-
-    SerializeAction(Serializer serializer) {
-        this.serializer = serializer;
-    }
-
     @Override
     public ResponseData execute(ResponseData data) {
         if (data.isCompleted()) {
             return data;
         }
         HttpResponse response = data.getResponse();
-        if (!response.getContentType().isString()) {
+        Serializer serializer = Util.SERIALIZERS.get(response.getContentType());
+        if (serializer == null) {
             return data;
         }
-        ResponseBody body = new ResponseBody(response.getCode().getMessage(), response.getBody());
         try {
-            String toSet = serializer.serialize(body);
-            response.setContentType(serializer.getContentType());
+            String toSet = serializer.serialize(response.getBody());
             response.setBody(toSet);
-        } catch (Exception e) {
-            data.setResponse(Constants.ERROR_RESPONSE);
+        } catch (Throwable e) {
+            data.setResponse(Util.ERROR_RESPONSE);
         }
         return data;
     }
