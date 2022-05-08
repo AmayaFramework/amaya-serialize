@@ -1,4 +1,4 @@
-package io.github.amayaframework.serializer;
+package io.github.amayaframework.serialize;
 
 import java.lang.annotation.*;
 

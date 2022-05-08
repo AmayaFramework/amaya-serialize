@@ -1,4 +1,4 @@
-package io.github.amayaframework.serializer;
+package io.github.amayaframework.serialize;
 
 /**
  * An interface describing a universal serializer intended for subsequent use by the plugin.

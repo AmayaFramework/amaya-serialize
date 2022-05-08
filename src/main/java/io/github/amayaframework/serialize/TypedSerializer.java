@@ -1,4 +1,4 @@
-package io.github.amayaframework.serializer;
+package io.github.amayaframework.serialize;
 
 import io.github.amayaframework.http.ContentType;
 import org.atteo.classindex.IndexAnnotated;

@@ -1,4 +1,4 @@
-package io.github.amayaframework.serializer;
+package io.github.amayaframework.serialize;
 
 import io.github.amayaframework.core.contexts.HttpRequest;
 import io.github.amayaframework.core.pipeline.InputAction;

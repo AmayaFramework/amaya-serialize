@@ -1,4 +1,4 @@
-package io.github.amayaframework.serializer;
+package io.github.amayaframework.serialize;
 
 import io.github.amayaframework.core.configurators.Configurator;
 import io.github.amayaframework.core.controllers.Controller;
